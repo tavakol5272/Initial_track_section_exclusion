@@ -28,6 +28,9 @@
         "name": "lubridate"
       },
       {
+        "name": "dplyr"
+      },
+      {
         "name": "move2"
       }
     ]
