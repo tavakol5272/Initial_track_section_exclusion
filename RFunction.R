@@ -5,7 +5,7 @@ library(lubridate)
 test_data <- readRDS("./data/raw/input2_move2loc_LatLon.rds")
 # class(test_data)
 # dim(test_data)
-# names(test_data)
+#names(test_data)
 # str(test_data)
 # head(test_data)
 # mt_time(test_data)[1:10]        
@@ -14,8 +14,8 @@ test_data <- readRDS("./data/raw/input2_move2loc_LatLon.rds")
 
 
 # Exclude function
-#rFunction = function(data, amount, unit = c("days","weeks","months")) {
-ex_function = function(data, amount, unit = c("days","weeks","months")) { 
+#rFunction = function(data, amount, unit = c("day","week","month")) {
+ex_function = function(data, amount, unit = c("day","week","month")) { 
   unit <- match.arg(unit)
   
   # start time
@@ -45,28 +45,45 @@ ex_function = function(data, amount, unit = c("days","weeks","months")) {
     row.names = NULL
   )
   
-  d[order(d$span_hrs, decreasing = TRUE), ]
+  d <- d[order(d$span_hrs, decreasing = TRUE), ]
+  
+  print(d)
   
   ####################################################
   
   
   add_time <- switch(unit,
-                     "days"   = lubridate::days(amount),          
-                     "weeks"  = lubridate::weeks(amount),         
-                     "months" = lubridate::dmonths(amount)         
+                     "day"   = lubridate::days(amount),          
+                     "week"  = lubridate::weeks(amount),         
+                     "month" = lubridate::dmonths(amount)         
   )
   
   
   cutoff <- start_row + add_time
   keep   <- !is.na(tm) & !is.na(cutoff) & (tm >= cutoff)
   
+  ##print summary
+  summary_df <- data.frame(
+    track_id = ids,
+    keep     = keep
+  ) %>%
+    dplyr::group_by(track_id) %>%
+    dplyr::summarise(
+      n_total = dplyr::n(),
+      n_keep  = sum(keep, na.rm = TRUE),
+      n_drop  = n_total - n_keep,
+      .groups = "drop"
+    )
+  
+  print(summary_df)
+  
   result <- data[keep, ]
   
-  return(result)
+  return(list(  data = result,   summary = summary_df  ))
+  
 }
 
-r <- ex_function(data = test_data, amount = 5, unit = "days")
-head(mt_time(r),20)
+r <- ex_function(data = test_data, amount = 5, unit = "day")
 
 
 

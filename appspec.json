@@ -2,26 +2,22 @@
   "version": "1.2",
   "settings": [
     {
-      "id": "sdk",
-      "name": "The name of the MoveApps SDK",
-      "description": "Showcase requesting a string input from the users of your app.",
-      "defaultValue": "MoveApps SDK",
+      "id": "unit",
+      "name": "Time unit",
+      "description": "Choose the time unit to exclude data from the beginning of each track, options: day, week, month",
+      "defaultValue": "day",
       "type": "STRING"
     },
     {
-      "id": "year",
-      "name": "The year",
-      "description": "Insert description for the year setting setting",
-      "defaultValue": 2022,
+      "id": "amount",
+      "name": "Number of units",
+      "description": "Specify how many of the selected time units should be excluded from the start of each track.",
+      "defaultValue": 3,
       "type": "INTEGER"
-    },
-    {
-      "id": "auxiliary-file-a",
-      "name": "Personalization",
-      "description": "You can personalize the app by providing a file",
-      "type": "USER_FILE"
     }
+    
   ],
+  
   "dependencies": {
     "R": [
       {
@@ -46,35 +42,24 @@
   },
   "language": "eng",
   "keywords": [
-    "example",
-    "template"
+    "exclusion",
+    "exclude",
+    "remove",
+    "delete"
   ],
   "people": [
     {
-      "firstName": "Charles",
+      "firstName": "Nafiseh",
       "middleInitials": null,
-      "lastName": "Darwin",
-      "email": "creator@example.com",
+      "lastName": "Tavakol",
+      "email": "ntavakol@ab.mpg.de",
       "roles": [
         "author",
         "creator"
       ],
-      "orcid": null,
-      "affiliation": null,
-      "affiliationRor": null
-    }
-  ],
-  "funding": [
-    {
-      "name": "funder name",
-      "comment": "grant for App"
-    }
-  ],
-  "references": [
-    {
-      "type": "IsDescribedBy",
-      "note": "Darwin, C. 1900. The creation. Journal XY. 1-2",
-      "url": "https://anylink.xyz"
+      "orcid": "0000-0003-3674-4784",
+      "affiliation": "Max-Planck-Institute of Animal Behavior",
+      "affiliationRor": "https://ror.org/026stee22"
     }
   ]
 }
