@@ -1,28 +1,26 @@
-# Name of App *(Give your app a short and informative title. Please adhere to our convention of Title Case without hyphens (e.g. My New App))*
+# Initial Track section exclusion
 
 MoveApps
 
-Github repository: *github.com/yourAccount/Name-of-App* *(provide the link to the repository where the code of the App can be found)*
+Github repository: *https://github.com/tavakol5272/Initial_track_section_exclusion*
 
 ## Description
-*Enter here the short description of the App that might also be used when filling out the description during App submission to MoveApps. This text is directly presented to Users that look through the list of Apps when compiling Workflows.*
+Removes data from the beginning of each track for the specified time unit and amount.
 
 ## Documentation
-*Enter here a detailed description of your App. What is it intended to be used for. Which steps of analyses are performed and how. Please be explicit about any detail that is important for use and understanding of the App and its outcomes. You might also refer to the sections below.*
+Capturing and tagging animals can influence their behavior after release. 
+To account for this, the app allows excluding the initial part of each track so that potentially altered behavior is removed from subsequent analyses.
+The user can specify the exclusion window by selecting a time unit (day, week, or month) and the number of units. 
+The app determines the start time from the timestamp variable, adds the chosen number of days, weeks, or months to this point, and keeps only the data recorded after this new cutoff for each animal.
+After running the app, a summary table is displayed showing, for each track, how many records were kept and how many were excluded.
+Notes:
+-One week is considered as 7 days.
+-Months are converted into seconds (approximate duration of 30 days each) before being added.
 
 ### Application scope
 #### Generality of App usability
-*State here if the App was developed for a specific species, taxon or taxonomic group, or to answer a specific question. How might it influence the scope and utility of the App. This information will help the user to understand why the App might be producing no or odd results.*
+This App can be used with any species or taxonomic group as long as the data include timestamps and track IDs.
 
-*Examples:*
-
-This App was developed using data of birds. 
-
-This App was developed using data of red deer. 
-
-This App was developed for any taxonomic group. 
-
-This App was developed to identify kill sites, but can probably be used to identify any kind of location clusters like nests, dens or drinking holes.
 
 #### Required data properties
 *State here the required and/or optimal data properties for this App to perform properly.*

@@ -1,89 +1,59 @@
 library(move2)
 library(dplyr)
 library(lubridate)
+library(sf)
 
-test_data <- readRDS("./data/raw/input2_move2loc_LatLon.rds")
-# class(test_data)
-# dim(test_data)
-#names(test_data)
-# str(test_data)
-# head(test_data)
-# mt_time(test_data)[1:10]        
-# mt_track_id(test_data)[1:10] 
+data <- readRDS("./data/raw/input3_move2loc_LatLon.rds")
 
+select_unit <- function(choices = c("day","week","month"),
+                        title   = "Choose a time unit") {
+  utils::select.list(choices, multiple = FALSE, title = title)
+}
 
+time_unit <- select_unit()   
+amount <- as.integer(readline("Number of Units (integer): "))
 
+time_function <- function(amount, time_unit ) {
+
+  switch(time_unit,
+         day   = lubridate::days(amount),
+         week  = lubridate::weeks(amount),
+         month = lubridate::dmonths(amount))
+}
+
+add_time <- time_function(amount, time_unit)
+add_time
 # Exclude function
-#rFunction = function(data, amount, unit = c("day","week","month")) {
-ex_function = function(data, amount, unit = c("day","week","month")) { 
-  unit <- match.arg(unit)
+#rFunction = function(
+ex_function = function(data, add_time) { 
   
-  # start time
-  tm <- mt_time(data) 
-  head(tm)
-  
-  ids <- as.character(mt_track_id(data)) 
-  
-  valid <- !is.na(ids) & !is.na(tm)
-  
-  tz <- attr(tm, "tzone"); if (is.null(tz)) tz <- "UTC"
-  
-  starts_num <- tapply(tm[valid], ids[valid], min)
-  start_day  <- as.POSIXct(starts_num, origin = "1970-01-01", tz = tz)
-  start_row  <- start_day[ids]
-  
-  ###############just for checking:############################
-  ends_num <- tapply(tm[valid], ids[valid], max)
-  end_day  <- as.POSIXct(ends_num, origin = "1970-01-01", tz = tz)
+  cut_data <- data %>%
+    group_by(mt_track_id()) %>%
+    mutate(new_first_time = min(mt_time(), na.rm = TRUE) + add_time) %>%
+    ungroup()%>%
+    filter(mt_time() >= new_first_time) %>%
+    select(-new_first_time)
+    
   
   
-  d <- data.frame(
-    track_id = names(start_day),
-    start    = as.POSIXct(start_day, origin = "1970-01-01", tz = tz),
-    end      = as.POSIXct(end_day,   origin = "1970-01-01", tz = tz),
-    span_hrs = as.numeric(difftime(end_day, start_day, units = "hours")),
-    row.names = NULL
-  )
-  
-  d <- d[order(d$span_hrs, decreasing = TRUE), ]
-  
-  print(d)
-  
-  ####################################################
+  print_table <- data %>%
+    group_by( tarck_id = mt_track_id()) %>%
+    summarise(old_start_time = min(mt_time(), na.rm = TRUE), .groups = "drop") %>%
+    mutate(new_start_time = old_start_time + add_time) %>%
+    st_drop_geometry() %>% 
+    select(tarck_id, old_start_time, new_start_time)
+  #print(print_table)
   
   
-  add_time <- switch(unit,
-                     "day"   = lubridate::days(amount),          
-                     "week"  = lubridate::weeks(amount),         
-                     "month" = lubridate::dmonths(amount)         
-  )
-  
-  
-  cutoff <- start_row + add_time
-  keep   <- !is.na(tm) & !is.na(cutoff) & (tm >= cutoff)
-  
-  ##print summary
-  summary_df <- data.frame(
-    track_id = ids,
-    keep     = keep
-  ) %>%
-    dplyr::group_by(track_id) %>%
-    dplyr::summarise(
-      n_total = dplyr::n(),
-      n_keep  = sum(keep, na.rm = TRUE),
-      n_drop  = n_total - n_keep,
-      .groups = "drop"
-    )
-  
-  print(summary_df)
-  
-  result <- data[keep, ]
-  
-  return(list(  data = result,   summary = summary_df  ))
+  return(list(data = cut_data , summary_table = print_table  ))
   
 }
 
-r <- ex_function(data = test_data, amount = 5, unit = "day")
 
 
+
+out_put <- ex_function(data, add_time)
+
+print(out_put$summary_table)
+#head(out_put$data, 5)
 
