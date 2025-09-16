@@ -2,7 +2,7 @@
   "version": "1.2",
   "settings": [
     {
-      "id": "unit",
+      "id": "time_unit",
       "name": "Time unit",
       "description": "Choose the time unit to exclude data from the beginning of each track, options: day, week, month",
       "defaultValue": "day",
@@ -25,6 +25,9 @@
       },
       {
         "name": "dplyr"
+      },
+      {
+        "name": "sf"
       },
       {
         "name": "move2"
