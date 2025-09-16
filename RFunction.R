@@ -2,6 +2,7 @@ library(move2)
 library(dplyr)
 library(lubridate)
 library(sf)
+library(logger)
 
 data <- readRDS("./data/raw/input3_move2loc_LatLon.rds")
 
@@ -12,6 +13,8 @@ select_unit <- function(choices = c("day","week","month"),
 
 time_unit <- select_unit()   
 amount <- as.integer(readline("Number of Units (integer): "))
+if (is.na(amount) || amount %% 1 != 0) logger::log_warn("Number of units is not an integer or is missing")
+
 
 time_function <- function(amount, time_unit ) {
 
@@ -34,6 +37,9 @@ ex_function = function(data, add_time) {
     filter(mt_time() >= new_first_time) %>%
     select(-new_first_time)
     
+  if (is.null(cut_data) || nrow(cut_data) == 0L) {
+    logger::log_warn("All data were removed")
+  }
   
   
   print_table <- data %>%
