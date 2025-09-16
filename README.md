@@ -5,71 +5,53 @@ MoveApps
 Github repository: *https://github.com/tavakol5272/Initial_track_section_exclusion*
 
 ## Description
-Removes data from the beginning of each track for the specified time unit and amount.
+Removes data from the beginning of each track for the specified "Time Unit" and "Number of Units".
 
 ## Documentation
 Capturing and tagging animals can influence their behavior after release. 
 To account for this, the app allows excluding the initial part of each track so that potentially altered behavior is removed from subsequent analyses.
-The user can specify the exclusion window by selecting a time unit (day, week, or month) and the number of units. 
-The app determines the start time from the timestamp variable, adds the chosen number of days, weeks, or months to this point, and keeps only the data recorded after this new cutoff for each animal.
-After running the app, a summary table is displayed showing, for each track, how many records were kept and how many were excluded.
+The user can specify the exclusion time by selecting a time unit (day, week, or month) and the number of units. 
+For each track, the app:
+-finds the first timestamp,
+-adds a user-chosen time (e.g. 14 days, 2 weeks, 3 months) and creates the new_start_time
+-removes all locations before new_start_time,
+-returns the trimmed dataset and a summary table(showing track_id, the old and new start time)
+The app determines the start time from the timestamp variable, adds the chosen number of days, weeks, or months to this point, and keeps only the data recorded after this new start date for each animal.
+After running the app, a summary table is displayed showing, for each track, the old start time and new start time after trimmed the data.
 Notes:
 -One week is considered as 7 days.
--Months are converted into seconds (approximate duration of 30 days each) before being added.
+-Months are converted into seconds (approximate duration of "2629800 seconds ≈ 30.4375 days ~4.35 weeks") before being added.
 
 ### Application scope
 #### Generality of App usability
-This App can be used with any species or taxonomic group as long as the data include timestamps and track IDs.
+This app is species-agnostic and works for any Movebank study where you want to exclude the initial post-release period. It trims per track (typically per deployment) based on each track’s first timestamp.
 
 
 #### Required data properties
-*State here the required and/or optimal data properties for this App to perform properly.*
-
-*Examples:*
-
-This App is only applicable to data that reflect range resident behavior. 
-
-The data should have a fix rate of at least 1 location per 30 minutes. 
-
 The App should work for any kind of (location) data.
 
 ### Input type
-*Indicate which type of input data the App requires.*
-
-*Example*: `move2::move2_loc`
+`move2::move2_loc
 
 ### Output type
-*Indicate which type of output data the App produces to be passed on to subsequent Apps.*
-
-*Example:* `move2::move2_loc`
+`move2::move2_loc
 
 ### Artefacts
-*If the App creates artefacts (e.g. csv, pdf, jpeg, shapefiles, etc), please list them here and describe each.*
-
-*Example:* `rest_overview.csv`: csv-file with Table of all rest site properties
+this app return the new data set that contains all the data after the new start date. It also prints a summary table showing for each track, the old and new start time.
 
 ### Settings 
-*Please list and define all settings/parameters that the App requires to be set by the App user, if necessary including their unit. Please first state the Setting name the user encounters in the Settings menu defined in the appspecs.json, and between brackets the argument used in the R function to be able to identify it quickly in the code if needed.*
+`Choose a time unit`: Defined the unit of time that you want to consider in exclusion. Dropdown with: day, week, or month.
 
-*Example:* `Radius of resting site` (radius): Defined radius the animal has to stay in for a given duration of time for it to be considered resting site. Unit: `metres`.
+`Number of Units (integer):`:A non-negative integer specifying how many units to exclude from the start of each track.
+
 
 ### Changes in output data
-*Specify here how and if the App modifies the input data. Describe clearly what e.g. each additional column means.*
+it removes all the data before the new start time
 
-*Examples:*
 
-The App adds to the input data the columns `Max_dist` and `Avg_dist`. They contain the maximum distance to the provided focal location and the average distance to it over all locations. 
-
-The App filterers the input data as selected by the user. 
-
-The output data is the outcome of the model applied to the input data. 
-
-The input data remains unchanged.
 
 ### Most common errors
-*Please describe shortly what most common errors of the App can be, how they occur and best ways of solving them.*
+`All data were removed`: When The new_start_time  is later than the last timestamp for every track, The trimmed dataset is empty and a warning is shown.Fix: Use a smaller Number of units or a shorter Time unit.
+`Number of units is not an integer or is missing`:when enter the non integer for "Number of Units" trimming fails. Fix: Provide a non-negative integer (0 keeps data unchanged).
 
 ### Null or error handling
-*Please indicate for each setting as well as the input data which behaviour the App is supposed to show in case of errors or NULL values/input. Please also add notes of possible errors that can happen if settings/parameters are improperly set and any other important information that you find the user should be aware of.*
-
-*Example:* **Setting `radius`:** If no radius AND no duration are given, the input data set is returned with a warning. If no radius is given (NULL), but a duration is defined then a default radius of 1000m = 1km is set. 
