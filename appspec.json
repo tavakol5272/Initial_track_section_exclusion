@@ -5,8 +5,14 @@
       "id": "time_unit",
       "name": "Time unit",
       "description": "Choose the time unit to exclude data from the beginning of each track, options: day, week, month",
-      "defaultValue": "day",
-      "type": "STRING"
+      "defaultValue": null,
+      "type": "DROPDOWN",
+      "options": [
+        { "value": null, "displayText": "Nothing selected" },
+        { "value": "day",   "displayText": "Day" },
+        { "value": "week",  "displayText": "Week" },
+        { "value": "month", "displayText": "Month" }
+      ]
     },
     {
       "id": "amount",
