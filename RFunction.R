@@ -66,7 +66,3 @@ rFunction <-  function(data, amount, time_unit=c("day","week","month")) {
   return(cut_data)
   
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> a78b2b2986e1397c4edc539284bd5f231ba97e67
