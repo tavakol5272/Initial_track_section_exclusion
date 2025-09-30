@@ -4,11 +4,6 @@ library(lubridate)
 library(sf)
 
 
-## these 3 lines are just to easily run the code line by line within the function. 
-## Once the code is written adjustparamenters in app-configuration.json and data path in .env dfile
-# data <- readRDS("./data/raw/input2_move2loc_LatLon.rds") ## change in .env file
-# amount <- 1            ## change in app-configuration.json file
-# time_unit <- "day"
 
 rFunction <-  function(data, amount, time_unit=c("day","week","month")) {
   
@@ -51,12 +46,4 @@ rFunction <-  function(data, amount, time_unit=c("day","week","month")) {
   return(cut_data)
   
 }
-
-
-
-
-out_put <- ex_function(data, add_time)
-
-print(out_put$summary_table)
-#head(out_put$data, 5)
 
