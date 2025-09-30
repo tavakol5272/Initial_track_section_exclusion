@@ -4,11 +4,6 @@ library(lubridate)
 library(sf)
 
 
-## these 3 lines are just to easily run the code line by line within the function. 
-## Once the code is written adjustparamenters in app-configuration.json and data path in .env dfile
-# data <- readRDS("./data/raw/input2_move2loc_LatLon.rds") ## change in .env file
-# amount <- 1            ## change in app-configuration.json file
-# time_unit <- "day"
 
 rFunction <-  function(data, amount, time_unit=c("day","week","month")) {
   
@@ -48,15 +43,26 @@ rFunction <-  function(data, amount, time_unit=c("day","week","month")) {
     logger.warn("All data were removed. No data can be passed on to the next App")
   }
   
+  
+  
+  if(!any(is.null(cut_data) || nrow(cut_data) == 0L)){
+  print_table <- data %>%
+    group_by( tarck_id = mt_track_id()) %>%
+    summarise(old_start_time = min(mt_time(), na.rm = TRUE),
+              new_track_duraction_days = round(difftime(mt_time()[n()],mt_time()[1]+add_time, "days"),2),
+              .groups = "drop") %>%
+    mutate(new_start_time = old_start_time + add_time) %>%
+    st_drop_geometry() %>% 
+    select(tarck_id, old_start_time, new_start_time, new_track_duraction_days)
+  
+  logger.info(paste0("You removed the first ",amount," ", time_unit, " of each track."))
+  print(print_table)
+  }
+  logger.info(paste0("Data from ",length(unique(mt_track_id(cut_data)))," out of ", length(unique(mt_track_id(data))), " tracks will be passed on to the next App."))
+  if (is.null(cut_data) || nrow(cut_data) == 0L) {
+    logger.warn("All data were removed. No data can be passed on to the next App")
+  }
+  
   return(cut_data)
   
 }
-
-
-
-
-out_put <- ex_function(data, add_time)
-
-print(out_put$summary_table)
-#head(out_put$data, 5)
-
